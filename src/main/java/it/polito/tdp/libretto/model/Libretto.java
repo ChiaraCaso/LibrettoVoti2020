@@ -1,6 +1,7 @@
 package it.polito.tdp.libretto.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -11,6 +12,23 @@ import java.util.List;
 public class Libretto {
 
 	private List <Voto> voti = new ArrayList<>();
+	
+	/**
+	 * Crea un libretto nuovo (e vuoto)
+	 */
+	public Libretto() {
+		super();
+	}
+
+	/**
+	 * Copy constructor
+	 * "Shallow" ( copia superficiale) -> non sto condividendo l'oggetto ma solo il riferimento ad essi
+	 * @param lib
+	 */
+	public Libretto (Libretto lib) {
+		super();
+		this.voti.addAll(lib.voti); //copiando il libretto condividendo gli oggetti voto
+	}
 	
 	//Delega l'operazione di aggiunta all'array list
 	/**
@@ -52,6 +70,7 @@ public class Libretto {
 	 * @param voto votazione specificata
 	 * @return libretto "ridotto" 
 	 */
+	
 	//meglio questo, è più utile, la stringa è fine solo a se stessa
 	//può solo essere stampata ma perdo il riferimento all'oggetto.
 	public Libretto estraiVotiUguali (int voto) {
@@ -126,5 +145,64 @@ public class Libretto {
 			return false;
 		
 		return (esiste.getVoto() != v.getVoto());
+	}
+	
+	/**
+	 * Restituisce un nuovo libretto, migliorando i voti del libretto attuale
+	 * 
+	 * @return
+	 */
+	public Libretto creaLibrettoMigliorato() {
+		Libretto nuovo = new Libretto();
+		
+		for (Voto v : this.voti) {
+//			Voto v2 = new Voto(v); -> con il copy constructor
+			Voto v2 = v.clone(); //-> con il metodo clone 
+			
+			//NON CI PIACE Voto v3 = new Voto (v.getCorso(), v.getVoto(), v.getData());
+			
+			if (v2.getVoto() >= 24) {
+				v2.setVoto(v2.getVoto()+2);
+				if(v2.getVoto()>30)
+					v2.setVoto(30);
+			} else if(v2.getVoto()>=18) {
+				v2.setVoto(v2.getVoto()+1);
+			}
+			
+			nuovo.Add(v2);
+		}
+		return nuovo;
+	}
+	
+	/**
+	 * Riordina i voti presenti nel libretto corrente alfabeticamente per corso 
+	 * stessi oggetti voto ma rimescolati
+	 */
+	public void ordinaPerCorso() {
+		Collections.sort(this.voti);
+	}
+	
+	public void ordinaPerVto() {
+		Collections.sort(this.voti, new ConfrontaVotiPerValutazione());
+	}
+	
+	/**
+	 * Elimina dal libretto tutti i voti <24
+	 */
+	
+	public void CancellaVotiScarsi() {
+		//devo creare per forza daRimuovere perchè non posso iterare e cancellare contemporanamente sulla stessa lista
+		
+		List<Voto> daRimuovere = new ArrayList <>();
+		for(Voto v: this.voti) {
+			if(v.getVoto()<24) {
+				daRimuovere.add(v);
+			}
+		}
+		
+		this.voti.removeAll(daRimuovere);
+//		for(Voto v : daRimuovere) {
+//			this.voti.remove(v);
+//		}
 	}
 }

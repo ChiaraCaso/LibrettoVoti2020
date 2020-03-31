@@ -2,7 +2,7 @@ package it.polito.tdp.libretto.model;
 
 import java.time.LocalDate;
 
-public class Voto {
+public class Voto implements Comparable <Voto>{
 	/**
 	 * Classe Voto contiene le informazioni su un esame superato
 	 */
@@ -24,7 +24,24 @@ public class Voto {
 		this.voto = voto;
 		this.data = data;
 	}
-
+	/**
+	 * Copy constructor di {@link Voto} : crea un nuovo {@link Voto} , copiando
+	 * il contenuto del parametro {@code v}.
+	 * @param v il voto da copiare
+	 */
+	
+	//ogni volta che metto = sto CONDIVIDENDO il contenuto di due oggetti
+	//ogni volta che un oggetto è immutabile non si pone il problema del copy constructor
+	//string e local date sono immutabli, voto è un int(dato primitivo no oggetto) e quindi si copia il valore
+	//nel caso in cui gli oggetti non siano immutabili il copy costructor
+	//sarà del tipo this.corso = new String (v.corso)
+	
+	public Voto (Voto v) {
+		this.corso = v.corso; //posso anche usare v.getCorso() 
+		this.data = v.data;
+		this.voto = v.voto;
+	}
+	
 	public String getCorso() {
 		return corso;
 	}
@@ -79,7 +96,22 @@ public class Voto {
 		return true;
 	}
 	
-	
+	/**
+	 * Crea una copia (clone) dell'oggetto presente (this), come nuovo oggetto
+	 */
+	public Voto clone() {
+		Voto v = new Voto (this.corso, this.voto, this.data);
+		return v ;
+	}
+	@Override
+	public int compareTo(Voto other) {
+		/*
+		 * <0 se this < other
+		 * =0 se this = other
+		 * >0 se this > other
+		 */
+		return this.corso.compareTo(other.corso);
+	}
 	
 	
 	
